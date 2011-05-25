@@ -15,16 +15,8 @@ package com.jorambarrez;
 
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.event.dd.acceptcriteria.And;
 import com.vaadin.incubator.dragdroplayouts.DDGridLayout;
-import com.vaadin.incubator.dragdroplayouts.DDGridLayout.GridLayoutTargetDetails;
 import com.vaadin.incubator.dragdroplayouts.client.ui.LayoutDragMode;
-import com.vaadin.incubator.dragdroplayouts.events.HorizontalLocationIs;
-import com.vaadin.incubator.dragdroplayouts.events.LayoutBoundTransferable;
-import com.vaadin.incubator.dragdroplayouts.events.VerticalLocationIs;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
@@ -37,6 +29,11 @@ public class FlowEditor extends CustomComponent {
 
   private static final long serialVersionUID = 1L;
   
+  protected static final int NODE_WIDTH = 100;
+  protected static final int NODE_HEIGHT = 100;
+  
+  protected int currentWidth;
+  protected int currentHeight;
   protected DDGridLayout layout;
 
   public FlowEditor() {
@@ -49,8 +46,10 @@ public class FlowEditor extends CustomComponent {
     layout.setSpacing(false);
     layout.setMargin(false);
     
-    layout.setWidth(200, UNITS_PIXELS);
-    layout.setHeight(200, UNITS_PIXELS);
+    currentWidth = 200;
+    currentHeight = 200;
+    layout.setWidth(currentWidth, UNITS_PIXELS);
+    layout.setHeight(currentHeight, UNITS_PIXELS);
     
     // Drop zone should be the whole center area
     layout.setComponentHorizontalDropRatio(0);
@@ -60,50 +59,118 @@ public class FlowEditor extends CustomComponent {
     layout.setDragMode(LayoutDragMode.CLONE);
 
     // Enable dropping components
-    layout.setDropHandler(new DropHandler() {
+    layout.setDropHandler(new FlowEditorDropHandler(this));
 
-      public AcceptCriterion getAcceptCriterion() {
-        // Only allow dropping in the middle of the cell
-        return new And(VerticalLocationIs.MIDDLE, HorizontalLocationIs.CENTER);
-      }
-
-      public void drop(DragAndDropEvent event) {
-        GridLayoutTargetDetails details = (GridLayoutTargetDetails) event.getTargetDetails();
-        LayoutBoundTransferable transferable = (LayoutBoundTransferable) event.getTransferable();
-
-        int column = details.getOverColumn();
-        int row = details.getOverRow();
-
-        // Get the dragged component
-        Component c = transferable.getComponent();
-
-        // If cell is empty then drop it there
-        if (layout.getComponent(column, row) == null) {
-          layout.removeComponent(c);
-          layout.addComponent(c, column, row);
-          layout.setComponentAlignment(c, Alignment.MIDDLE_CENTER);
-        }
-      }
-    });
-
+    // Enable clicking for new nodes
     layout.addListener(new LayoutClickListener() {
       public void layoutClick(LayoutClickEvent event) {
-        
+//        event.isDoubleClick();
       }
     });
+    
+    // Initial: all empty
+    addEmptyNode(0, 0);
+    addEmptyNode(0, 1);
+    addEmptyNode(1, 0);
+    addEmptyNode(1, 1);
   }
   
-  protected void createLabel(String text, int row, int column) {
-    Label lbl = new Label(text);
-    lbl.addStyleName("node");
-    lbl.setWidth(100, UNITS_PIXELS);
-    lbl.setHeight(100, UNITS_PIXELS);
-    layout.addComponent(lbl, column, row);
-    layout.setComponentAlignment(lbl, Alignment.MIDDLE_CENTER);
+  public Node getNode(int column, int row) {
+    return (Node) layout.getComponent(column, row);
+  }
+  
+  public int getColumn(Node node) {
+    return layout.getComponentArea(node).getColumn1(); // col1 or col2, it doesnt matter here
+  }
+  
+  public int getRow(Node node) {
+    return layout.getComponentArea(node).getRow1(); // row 1 or row2, it doesnt matter here
   }
   
   public void setInitialNode(String text) {
-    createLabel(text, 0, 0);
+    addNode(text, 0, 0);
   }
   
+  public void addNode(String text, int row, int column) {
+    Node node = new Node(text);
+    node.addStyleName("node");
+    addNode(node, row, column);
+  }
+  
+  public void addEmptyNode(int column, int row) {
+    Node node = new Node("&nbsp;", Label.CONTENT_XHTML);
+    node.setEmptyNode(true);
+    addNode(node, row, column);
+  }
+  
+  protected void addNode(Node node, int row, int column) {
+    node.setWidth(NODE_WIDTH, UNITS_PIXELS);
+    node.setHeight(NODE_HEIGHT, UNITS_PIXELS);
+    
+    Component component = layout.getComponent(column, row);
+    if (component != null) {
+      layout.replaceComponent(component, node);
+    } else {
+      layout.addComponent(node, column, row);
+    }
+    
+    layout.setComponentAlignment(node, Alignment.MIDDLE_CENTER);
+  }
+  
+  public void removeNode(Node node) {
+    layout.removeComponent(node);
+  }
+  
+  public void replaceNode(Node originalNode, Node newNode) {
+    layout.replaceComponent(originalNode, newNode); // and place it where the empty node was
+    layout.setComponentAlignment(newNode, Alignment.MIDDLE_CENTER);
+  }
+  
+  public void ensureCorrectGridSize() {
+    boolean horizontalSizeChange = false;
+    
+    // Remove column if column before last two column contains empty node
+    int secondLastColumn = layout.getColumns() - 2;
+    int lastColumn = secondLastColumn + 1;
+    
+    Node secondLastNode = (Node) layout.getComponent(secondLastColumn, 0);
+    Node lastNode = (Node) layout.getComponent(lastColumn, 0);
+
+    if (secondLastNode.isEmptyNode() && lastNode.isEmptyNode()) {
+      
+      // Find all empty nodes
+      boolean nonEmptyNodeFound = false;
+      int nrOfExtraEmptyNodes = 0;
+      while(!nonEmptyNodeFound) {
+        Node node = (Node) layout.getComponent(secondLastColumn - nrOfExtraEmptyNodes - 1, 0);
+        if (node.isEmptyNode()) {
+          nrOfExtraEmptyNodes++;
+        } else {
+          nonEmptyNodeFound = true;
+        }
+      }
+      
+      // Delete all empty nodes
+      for (int i = lastColumn; i >= lastColumn - nrOfExtraEmptyNodes; i--) {
+        layout.removeComponent(i, 0);
+      }
+      layout.setColumns(lastColumn - nrOfExtraEmptyNodes);
+      
+      currentWidth -= NODE_WIDTH + (nrOfExtraEmptyNodes * NODE_WIDTH);
+      layout.setWidth(currentWidth, UNITS_PIXELS);
+      horizontalSizeChange = true;
+    }
+    
+    // Add column if last column contains non-empty node
+    if (!horizontalSizeChange && lastNode.getData() == null) {
+      int nrOfColumns = layout.getColumns() + 1;
+      layout.setColumns(nrOfColumns);
+      
+      currentWidth += NODE_WIDTH;
+      layout.setWidth(currentWidth, UNITS_PIXELS);
+      
+      addEmptyNode(nrOfColumns - 1, 0);
+    }
+  }
+
 }
