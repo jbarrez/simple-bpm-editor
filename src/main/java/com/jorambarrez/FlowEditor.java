@@ -127,50 +127,49 @@ public class FlowEditor extends CustomComponent {
   }
   
   public void ensureCorrectGridSize() {
-    boolean horizontalSizeChange = false;
-    
-    // Remove column if column before last two column contains empty node
-    int secondLastColumn = layout.getColumns() - 2;
-    int lastColumn = secondLastColumn + 1;
-    
-    Node secondLastNode = (Node) layout.getComponent(secondLastColumn, 0);
-    Node lastNode = (Node) layout.getComponent(lastColumn, 0);
 
-    if (secondLastNode.isEmptyNode() && lastNode.isEmptyNode()) {
-      
-      // Find all empty nodes
-      boolean nonEmptyNodeFound = false;
-      int nrOfExtraEmptyNodes = 0;
-      while(!nonEmptyNodeFound) {
-        Node node = (Node) layout.getComponent(secondLastColumn - nrOfExtraEmptyNodes - 1, 0);
-        if (node.isEmptyNode()) {
-          nrOfExtraEmptyNodes++;
-        } else {
-          nonEmptyNodeFound = true;
+    NodeCoordinates rightMostNodeCoordinates = findRightMostNode();
+    int oldLastColumn = layout.getColumns() - 1;
+    int newLastColumn = rightMostNodeCoordinates.getColumn() + 1;
+    
+    if (oldLastColumn > newLastColumn) {
+    
+      for (int column = oldLastColumn; column > newLastColumn; column--) {
+        for (int row = 0; row < layout.getRows(); row++) {
+          layout.removeComponent(column, row);
         }
       }
+      layout.setColumns(newLastColumn + 1);
       
-      // Delete all empty nodes
-      for (int i = lastColumn; i >= lastColumn - nrOfExtraEmptyNodes; i--) {
-        layout.removeComponent(i, 0);
-      }
-      layout.setColumns(lastColumn - nrOfExtraEmptyNodes);
-      
-      currentWidth -= NODE_WIDTH + (nrOfExtraEmptyNodes * NODE_WIDTH);
+      currentWidth -= (oldLastColumn - newLastColumn) * NODE_WIDTH;
       layout.setWidth(currentWidth, UNITS_PIXELS);
-      horizontalSizeChange = true;
-    }
     
-    // Add column if last column contains non-empty node
-    if (!horizontalSizeChange && lastNode.getData() == null) {
-      int nrOfColumns = layout.getColumns() + 1;
+    } else if (oldLastColumn < newLastColumn) {
+      int nrOfColumns = newLastColumn + 1;
       layout.setColumns(nrOfColumns);
       
       currentWidth += NODE_WIDTH;
       layout.setWidth(currentWidth, UNITS_PIXELS);
       
-      addEmptyNode(nrOfColumns - 1, 0);
+      for (int row = 0; row < layout.getRows(); row++) {
+        addEmptyNode(nrOfColumns - 1, row);
+      }
     }
   }
-
+  
+  /**
+   * @return an array containing two elements: [column, row] of the most rightmost element
+   */
+  protected NodeCoordinates findRightMostNode() {
+    for (int column = layout.getColumns() - 1; column >= 0; column--) {
+      for (int row = 0; row <= layout.getRows() - 1; row++) {
+        if (!getNode(column, row).isEmptyNode()) {
+          return new NodeCoordinates(column, row);
+        }
+      }
+    }
+    
+    throw new RuntimeException("Programming error: there should *always* be a rightmost node");
+  }
+  
 }
