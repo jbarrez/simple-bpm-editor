@@ -127,13 +127,18 @@ public class FlowEditor extends CustomComponent {
   }
   
   public void ensureCorrectGridSize() {
+    ensureHorizontalGridSize();
+    ensureVerticalGridSize();
+  }
 
+  protected void ensureHorizontalGridSize() {
     NodeCoordinates rightMostNodeCoordinates = findRightMostNode();
     int oldLastColumn = layout.getColumns() - 1;
     int newLastColumn = rightMostNodeCoordinates.getColumn() + 1;
     
-    if (oldLastColumn > newLastColumn) {
+    if (oldLastColumn > newLastColumn) { // Shrink
     
+      // Remove obsolete empty nodes
       for (int column = oldLastColumn; column > newLastColumn; column--) {
         for (int row = 0; row < layout.getRows(); row++) {
           layout.removeComponent(column, row);
@@ -141,10 +146,12 @@ public class FlowEditor extends CustomComponent {
       }
       layout.setColumns(newLastColumn + 1);
       
+      // Resize grid
       currentWidth -= (oldLastColumn - newLastColumn) * NODE_WIDTH;
       layout.setWidth(currentWidth, UNITS_PIXELS);
     
-    } else if (oldLastColumn < newLastColumn) {
+    } else if (oldLastColumn < newLastColumn) { // Expand
+      
       int nrOfColumns = newLastColumn + 1;
       layout.setColumns(nrOfColumns);
       
@@ -157,9 +164,40 @@ public class FlowEditor extends CustomComponent {
     }
   }
   
-  /**
-   * @return an array containing two elements: [column, row] of the most rightmost element
-   */
+  protected void ensureVerticalGridSize() {
+    NodeCoordinates lowestNodeCoordinates = findLowestNode();
+    int oldLastRow = layout.getRows() - 1;
+    int newLastRow = lowestNodeCoordinates.getRow() + 1;
+    
+    if (oldLastRow > newLastRow) { // Shrink
+      
+      // Remove obsolete empty nodes
+      for (int row = oldLastRow; row > newLastRow; row--) {
+        for (int column = 0; column < layout.getColumns(); column++) {
+          layout.removeComponent(column, row);
+        }
+      }
+      layout.setRows(newLastRow + 1);
+      
+      // Resize grid
+      currentHeight -= (oldLastRow - newLastRow) * NODE_HEIGHT;
+      layout.setHeight(currentHeight, UNITS_PIXELS);
+      
+    } else if (oldLastRow < newLastRow) { // Expad
+      
+      int nrOfRows = newLastRow + 1;
+      layout.setRows(nrOfRows);
+      
+      currentHeight += NODE_HEIGHT;
+      layout.setHeight(currentHeight, UNITS_PIXELS);
+      
+      for (int column = 0; column < layout.getColumns(); column ++) {
+        addEmptyNode(column, nrOfRows - 1); 
+      }
+      
+    }
+  }
+
   protected NodeCoordinates findRightMostNode() {
     for (int column = layout.getColumns() - 1; column >= 0; column--) {
       for (int row = 0; row <= layout.getRows() - 1; row++) {
@@ -170,6 +208,17 @@ public class FlowEditor extends CustomComponent {
     }
     
     throw new RuntimeException("Programming error: there should *always* be a rightmost node");
+  }
+  
+  protected NodeCoordinates findLowestNode() {
+    for (int row = layout.getRows() - 1; row >= 0; row--) {
+      for (int column = 0; column < layout.getColumns(); column++) {
+        if (!getNode(column, row).isEmptyNode()) {
+          return new NodeCoordinates(column, row);
+        }
+      }
+    }
+    throw new RuntimeException("Programming error: there should *always* be a lowest node");
   }
   
 }
