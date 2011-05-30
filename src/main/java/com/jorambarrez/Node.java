@@ -23,22 +23,47 @@ public class Node extends Label {
 
   private static final long serialVersionUID = 1L;
   
-  protected boolean isEmptyNode;
+  protected static final String STYLE_NODE = "node";
+  protected static final String STYLE_CANDIDATE = "candidate";
+  
+  protected boolean isEmpty = false;
+  protected boolean isCandidate;
   
   public Node(String text) {
     super(text);
+    addStyleName(STYLE_NODE); // default
   }
   
   public Node(String text, int mode) {
     super(text, mode);
   }
 
-  public boolean isEmptyNode() {
-    return isEmptyNode;
+  public boolean isEmpty() {
+    return isEmpty;
   }
 
-  public void setEmptyNode(boolean isEmptyNode) {
-    this.isEmptyNode = isEmptyNode;
+  public void setEmpty(boolean isEmpty) {
+    this.isEmpty = isEmpty;
+    
+    if (isEmpty) {
+      removeStyleName(STYLE_NODE);
+    } else {
+      setStyleName(STYLE_NODE);
+    }
   }
-
+  
+  public boolean isCandidate() {
+    return isCandidate;
+  }
+  
+  public void setCandidate(boolean isCandidate) {
+    this.isCandidate = isCandidate;
+    
+    if (isCandidate) {
+      setStyleName(STYLE_CANDIDATE);
+    } else {
+      setStyleName(STYLE_NODE);
+    }
+  }
+  
 }

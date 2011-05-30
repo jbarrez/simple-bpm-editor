@@ -35,6 +35,9 @@ public class FlowEditor extends CustomComponent {
   protected int currentWidth;
   protected int currentHeight;
   protected DDGridLayout layout;
+  
+  protected NodeCoordinates rightMostNodeCoordinates;
+  protected NodeCoordinates lowestNodeCoordinates;
 
   public FlowEditor() {
 
@@ -93,13 +96,12 @@ public class FlowEditor extends CustomComponent {
   
   public void addNode(String text, int row, int column) {
     Node node = new Node(text);
-    node.addStyleName("node");
     addNode(node, row, column);
   }
   
   public void addEmptyNode(int column, int row) {
     Node node = new Node("&nbsp;", Label.CONTENT_XHTML);
-    node.setEmptyNode(true);
+    node.setEmpty(true);
     addNode(node, row, column);
   }
   
@@ -127,12 +129,12 @@ public class FlowEditor extends CustomComponent {
   }
   
   public void ensureCorrectGridSize() {
+    traverseAndMarkNodes();
     ensureHorizontalGridSize();
     ensureVerticalGridSize();
   }
 
   protected void ensureHorizontalGridSize() {
-    NodeCoordinates rightMostNodeCoordinates = findRightMostNode();
     int oldLastColumn = layout.getColumns() - 1;
     int newLastColumn = rightMostNodeCoordinates.getColumn() + 1;
     
@@ -165,7 +167,6 @@ public class FlowEditor extends CustomComponent {
   }
   
   protected void ensureVerticalGridSize() {
-    NodeCoordinates lowestNodeCoordinates = findLowestNode();
     int oldLastRow = layout.getRows() - 1;
     int newLastRow = lowestNodeCoordinates.getRow() + 1;
     
@@ -198,27 +199,41 @@ public class FlowEditor extends CustomComponent {
     }
   }
 
-  protected NodeCoordinates findRightMostNode() {
-    for (int column = layout.getColumns() - 1; column >= 0; column--) {
-      for (int row = 0; row <= layout.getRows() - 1; row++) {
-        if (!getNode(column, row).isEmptyNode()) {
-          return new NodeCoordinates(column, row);
+  protected void traverseAndMarkNodes() {
+    rightMostNodeCoordinates = null;
+    lowestNodeCoordinates = null;
+    
+    int rightMostColumn = -1;
+    int rightMostRow = -1;
+    int lowestColumn = -1;
+    int lowestRow = -1;
+    
+    for (int row = layout.getRows() - 1; row >= 0; row--) {
+      for (int column = layout.getColumns() - 1; column >= 0; column--) {
+        Node currentNode = getNode(column, row);
+        if (!currentNode.isEmpty()) {
+          if (column > rightMostColumn) {
+            rightMostColumn = column;
+            rightMostRow = row;
+          }
+          if (row > lowestRow) {
+            lowestColumn = column;
+            lowestRow = row;
+          }
         }
       }
     }
     
-    throw new RuntimeException("Programming error: there should *always* be a rightmost node");
-  }
-  
-  protected NodeCoordinates findLowestNode() {
-    for (int row = layout.getRows() - 1; row >= 0; row--) {
-      for (int column = 0; column < layout.getColumns(); column++) {
-        if (!getNode(column, row).isEmptyNode()) {
-          return new NodeCoordinates(column, row);
-        }
-      }
+    // Check if something is found
+    if (rightMostColumn == -1 || rightMostRow == -1) {
+      throw new RuntimeException("Programming error: there should *always* be a rightmost node");
+    } else if (lowestRow == -1 || lowestColumn == -1) {
+      throw new RuntimeException("Programming error: there should *always* be a lowest node");
     }
-    throw new RuntimeException("Programming error: there should *always* be a lowest node");
+    
+    // set coordinate member fields
+    rightMostNodeCoordinates = new NodeCoordinates(rightMostColumn, rightMostRow);
+    lowestNodeCoordinates = new NodeCoordinates(lowestColumn, lowestRow);
   }
   
 }

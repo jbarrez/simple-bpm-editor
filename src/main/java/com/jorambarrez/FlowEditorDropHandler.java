@@ -54,7 +54,7 @@ public class FlowEditorDropHandler implements DropHandler {
 
     // If cell is empty then drop it there
     Node targetNode = (Node) flowEditor.getNode(targetColumn, targetRow);
-    if (targetNode.isEmptyNode()) {
+    if (targetNode.isEmpty()) {
       
       // Remove dragged node from its original place
       flowEditor.removeNode(draggedNode);
