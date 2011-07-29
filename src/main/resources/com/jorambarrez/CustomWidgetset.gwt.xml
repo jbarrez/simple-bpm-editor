@@ -6,4 +6,8 @@
     <inherits name="com.vaadin.terminal.gwt.DefaultWidgetSet" />
 
     <inherits name="com.vaadin.incubator.dragdroplayouts.DragDropLayoutsWidgetSet" />
+
+    <inherits name="com.pantar.widget.graph.GraphWidget" />
+
+    <inherits name="com.pantar.widget.graph.GraphWidget" />
 </module>

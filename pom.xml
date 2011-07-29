@@ -30,7 +30,7 @@
 							<soyc>false</soyc>
 						</configuration>
 						
-						<!-- Expleicitely set GWT dependencies, as advised in http://vaadin.com/forum/-/message_boards/view_message/429868 -->
+						<!-- Explicitely set GWT dependencies, as advised in http://vaadin.com/forum/-/message_boards/view_message/429868 -->
             <dependencies>
               <dependency>
                 <groupId>com.google.gwt</groupId>
@@ -154,8 +154,47 @@
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>dragdroplayouts</artifactId>
-			<version>0.5</version>
+			<version>0.5.1</version>
 		</dependency>
-	</dependencies>
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>nodegraphwidget</artifactId>
+			<version>0.1.23</version>
+		</dependency>
+		
+		<!-- Non-repo libs -->
+    <dependency>
+      <groupId>localjar</groupId>
+      <artifactId>flexjson</artifactId>
+      <version>2.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/flexjson-2.1.jar</systemPath>
+    </dependency>
+    
+    <dependency>
+      <groupId>localjar</groupId>
+      <artifactId>gwt-dnd</artifactId>
+      <version>3.1.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/gwt-dnd-3.1.1.jar</systemPath>
+    </dependency>
+    
+    <dependency>
+      <groupId>localjar</groupId>
+      <artifactId>jsonwrapper</artifactId>
+      <version>2.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/jsonwrapper-0.2.jar</systemPath>
+    </dependency>
+    
+    <dependency>
+      <groupId>localjar</groupId>
+      <artifactId>gwt-svg</artifactId>
+      <version>2.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/lib-gwt-svg-0.5.2.jar</systemPath>
+    </dependency>
+		
+  </dependencies>
 
 </project>

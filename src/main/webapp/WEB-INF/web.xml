@@ -16,7 +16,7 @@
 		<init-param>
 			<description>Vaadin application class to start</description>
 			<param-name>application</param-name>
-			<param-value>com.jorambarrez.MyVaadinApplication</param-value>
+			<param-value>com.jorambarrez.ModelerApp</param-value>
 		</init-param>
 		<init-param>
 			<param-name>widgetset</param-name>

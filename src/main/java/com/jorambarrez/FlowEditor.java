@@ -13,227 +13,149 @@
 
 package com.jorambarrez;
 
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.incubator.dragdroplayouts.DDGridLayout;
-import com.vaadin.incubator.dragdroplayouts.client.ui.LayoutDragMode;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomComponent;
-import com.vaadin.ui.Label;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.jorambarrez.Node.STATE;
+import com.vaadin.ui.VerticalLayout;
 
 /**
  * @author Joram Barrez
  */
-public class FlowEditor extends CustomComponent {
+public class FlowEditor extends VerticalLayout {
 
   private static final long serialVersionUID = 1L;
   
-  protected static final int NODE_WIDTH = 100;
-  protected static final int NODE_HEIGHT = 100;
-  
   protected int currentWidth;
   protected int currentHeight;
-  protected DDGridLayout layout;
   
-  protected NodeCoordinates rightMostNodeCoordinates;
-  protected NodeCoordinates lowestNodeCoordinates;
+  protected List<Node> nodes = new ArrayList<Node>();
 
   public FlowEditor() {
-
-    layout = new DDGridLayout();
-    setCompositionRoot(layout);
-
-    layout.setColumns(2);
-    layout.setRows(2);
-    layout.setSpacing(false);
-    layout.setMargin(false);
-    
-    currentWidth = 200;
-    currentHeight = 200;
-    layout.setWidth(currentWidth, UNITS_PIXELS);
-    layout.setHeight(currentHeight, UNITS_PIXELS);
-    
-    // Drop zone should be the whole center area
-    layout.setComponentHorizontalDropRatio(0);
-    layout.setComponentVerticalDropRatio(0);
-
-    // Enable dragging components
-    layout.setDragMode(LayoutDragMode.CLONE);
-
-    // Enable dropping components
-    layout.setDropHandler(new FlowEditorDropHandler(this));
-
-    // Enable clicking for new nodes
-    layout.addListener(new LayoutClickListener() {
-      public void layoutClick(LayoutClickEvent event) {
-//        event.isDoubleClick();
-      }
-    });
-    
-    // Initial: all empty
-    addEmptyNode(0, 0);
-    addEmptyNode(0, 1);
-    addEmptyNode(1, 0);
-    addEmptyNode(1, 1);
+    addStyleName("border");
   }
   
-  public Node getNode(int column, int row) {
-    return (Node) layout.getComponent(column, row);
+  @Override
+  public void attach() {
+    setSpacing(false);
+    setMargin(false);
+    
+    currentWidth = Node.DEFAULT_NODE_WIDTH * 3;
+    currentHeight = Node.DEFAULT_NODE_HEIGHT * 3;
+    setWidth(currentWidth, UNITS_PIXELS);
+    setHeight(currentHeight, UNITS_PIXELS);
+    
+    // Initial setup
+    addDefaultStartNode();
+    addCandidateNode();
   }
   
-  public int getColumn(Node node) {
-    return layout.getComponentArea(node).getColumn1(); // col1 or col2, it doesnt matter here
+  protected void addDefaultStartNode() {
+    Node startNode = createNode(STATE.PROCESS_STEP, "First step");
+    addComponent(startNode);
+  }
+  
+  public Node addEmptyNode() {
+    Node emptyNode = createNode(STATE.EMPTY);
+    addComponent(emptyNode);
+    return emptyNode;
+  }
+  
+  public Node addEmptyNode(int row) {
+    Node emptyNode = createNode(STATE.EMPTY);
+    addComponent(emptyNode, row);
+    return emptyNode;
+  }
+  
+  public Node addCandidateNode() {
+    Node candidateNode = createNode(STATE.CANDIDATE);
+    addComponent(candidateNode);
+    return candidateNode;
+  }
+  
+  public Node addCandidateNode(int row) {
+    Node candidateNode = createNode(STATE.CANDIDATE);
+    addComponent(candidateNode, row);
+    return candidateNode;
+  }
+  
+  protected Node createNode(STATE state) {
+    return new DndNode(state);
+  }
+  
+  protected Node createNode(STATE state, String text) {
+    return new DndNode(state, text);
+  }
+  
+  public Node getNode(int row) {
+    if (row >= getComponentCount()) {
+      return null;
+    }
+    return (Node) getComponent(row);
   }
   
   public int getRow(Node node) {
-    return layout.getComponentArea(node).getRow1(); // row 1 or row2, it doesnt matter here
-  }
-  
-  public void setInitialNode(String text) {
-    addNode(text, 0, 0);
-  }
-  
-  public void addNode(String text, int row, int column) {
-    Node node = new Node(text);
-    addNode(node, row, column);
-  }
-  
-  public void addEmptyNode(int column, int row) {
-    Node node = new Node("&nbsp;", Label.CONTENT_XHTML);
-    node.setEmpty(true);
-    addNode(node, row, column);
-  }
-  
-  protected void addNode(Node node, int row, int column) {
-    node.setWidth(NODE_WIDTH, UNITS_PIXELS);
-    node.setHeight(NODE_HEIGHT, UNITS_PIXELS);
-    
-    Component component = layout.getComponent(column, row);
-    if (component != null) {
-      layout.replaceComponent(component, node);
-    } else {
-      layout.addComponent(node, column, row);
-    }
-    
-    layout.setComponentAlignment(node, Alignment.MIDDLE_CENTER);
+    return getComponentIndex(node); 
   }
   
   public void removeNode(Node node) {
-    layout.removeComponent(node);
+    removeComponent(node);
   }
   
-  public void replaceNode(Node originalNode, Node newNode) {
-    layout.replaceComponent(originalNode, newNode); // and place it where the empty node was
-    layout.setComponentAlignment(newNode, Alignment.MIDDLE_CENTER);
+  public void removeNode(int row) {
+    removeNode(row);
   }
   
-  public void ensureCorrectGridSize() {
-    traverseAndMarkNodes();
-    ensureHorizontalGridSize();
-    ensureVerticalGridSize();
-  }
-
-  protected void ensureHorizontalGridSize() {
-    int oldLastColumn = layout.getColumns() - 1;
-    int newLastColumn = rightMostNodeCoordinates.getColumn() + 1;
-    
-    if (oldLastColumn > newLastColumn) { // Shrink
-    
-      // Remove obsolete empty nodes
-      for (int column = oldLastColumn; column > newLastColumn; column--) {
-        for (int row = 0; row < layout.getRows(); row++) {
-          layout.removeComponent(column, row);
-        }
-      }
-      layout.setColumns(newLastColumn + 1);
-      
-      // Resize grid
-      currentWidth -= (oldLastColumn - newLastColumn) * NODE_WIDTH;
-      layout.setWidth(currentWidth, UNITS_PIXELS);
-    
-    } else if (oldLastColumn < newLastColumn) { // Expand
-      
-      int nrOfColumns = newLastColumn + 1;
-      layout.setColumns(nrOfColumns);
-      
-      currentWidth += NODE_WIDTH;
-      layout.setWidth(currentWidth, UNITS_PIXELS);
-      
-      for (int row = 0; row < layout.getRows(); row++) {
-        addEmptyNode(nrOfColumns - 1, row);
-      }
+  public void replaceEmptyNode(Node emptyNode, Node newNode) {
+    if (!emptyNode.isEmpty()) {
+      throw new RuntimeException("Only possible to replace empty nodes");
     }
+    replaceComponent(emptyNode, newNode); // and place it where the empty node was
+    notifyNodesChanged();
   }
   
-  protected void ensureVerticalGridSize() {
-    int oldLastRow = layout.getRows() - 1;
-    int newLastRow = lowestNodeCoordinates.getRow() + 1;
+  public void notifyNodesChanged() {
     
-    if (oldLastRow > newLastRow) { // Shrink
-      
-      // Remove obsolete empty nodes
-      for (int row = oldLastRow; row > newLastRow; row--) {
-        for (int column = 0; column < layout.getColumns(); column++) {
-          layout.removeComponent(column, row);
-        }
-      }
-      layout.setRows(newLastRow + 1);
-      
-      // Resize grid
-      currentHeight -= (oldLastRow - newLastRow) * NODE_HEIGHT;
-      layout.setHeight(currentHeight, UNITS_PIXELS);
-      
-    } else if (oldLastRow < newLastRow) { // Expad
-      
-      int nrOfRows = newLastRow + 1;
-      layout.setRows(nrOfRows);
-      
-      currentHeight += NODE_HEIGHT;
-      layout.setHeight(currentHeight, UNITS_PIXELS);
-      
-      for (int column = 0; column < layout.getColumns(); column ++) {
-        addEmptyNode(column, nrOfRows - 1); 
-      }
-      
-    }
-  }
-
-  protected void traverseAndMarkNodes() {
-    rightMostNodeCoordinates = null;
-    lowestNodeCoordinates = null;
-    
-    int rightMostColumn = -1;
-    int rightMostRow = -1;
-    int lowestColumn = -1;
-    int lowestRow = -1;
-    
-    for (int row = layout.getRows() - 1; row >= 0; row--) {
-      for (int column = layout.getColumns() - 1; column >= 0; column--) {
-        Node currentNode = getNode(column, row);
-        if (!currentNode.isEmpty()) {
-          if (column > rightMostColumn) {
-            rightMostColumn = column;
-            rightMostRow = row;
-          }
-          if (row > lowestRow) {
-            lowestColumn = column;
-            lowestRow = row;
-          }
-        }
-      }
+    // Add empty node when there is not one at the start
+    if (!getNode(0).isEmpty()) {
+      addEmptyNode(0);
     }
     
-    // Check if something is found
-    if (rightMostColumn == -1 || rightMostRow == -1) {
-      throw new RuntimeException("Programming error: there should *always* be a rightmost node");
-    } else if (lowestRow == -1 || lowestColumn == -1) {
-      throw new RuntimeException("Programming error: there should *always* be a lowest node");
+    int index = 0;
+    int newWidth = 0;
+    int newHeight = 0;
+    
+    while (index < getComponentCount()) {
+      
+      boolean nextNodeRemoved = false;
+      Node node = getNode(index);
+      Node nextNode = getNode(index + 1);
+      if (node.isProcessStep() && nextNode != null && !nextNode.isEmpty()) {
+        addEmptyNode(index + 1);
+      } else if (node.isEmpty() && nextNode != null && nextNode.isEmpty()) {
+        removeNode(nextNode);
+        nextNodeRemoved = true;
+      }
+        
+      newWidth += node.getWidth();
+      newHeight += node.getHeight();
+      
+      if (!nextNodeRemoved) {
+        index++;
+      }
+    }
+      
+    // Alway add candidate node at the end
+    if (!getNode(getComponentCount() - 1).isCandidate()) {
+      Node candidateNode = addCandidateNode();
+      newWidth += candidateNode.getNodeWidth();
+      newHeight += candidateNode.getNodeHeight();
     }
     
-    // set coordinate member fields
-    rightMostNodeCoordinates = new NodeCoordinates(rightMostColumn, rightMostRow);
-    lowestNodeCoordinates = new NodeCoordinates(lowestColumn, lowestRow);
+    // Change layout size
+    setWidth(newWidth, UNITS_PIXELS);
+    setHeight(newHeight, UNITS_PIXELS);
+      
   }
   
 }

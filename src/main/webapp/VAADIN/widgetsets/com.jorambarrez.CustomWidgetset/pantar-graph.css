@@ -1,0 +1,97 @@
+/* Default elements */
+
+.label { font-family: Arial; font-size: 11px; left: 17.5px;	top: 15px; }
+
+.node { width: 70px; height: 50px; background: url("images/automatic.png"); }
+.node.selected { width: 70px; height: 50px; background: url("images/automatic-selected.png"); }
+.node.enabled { width: 70px; height: 50px; background: url("images/automatic-enabled.png"); }
+
+/* Nodes. */
+
+.custom-node.automatic { width: 70px; height: 50px; background: url("images/automatic.png"); }
+.custom-node.automatic.selected { width: 70px; height: 50px; background: url("images/automatic-selected.png"); }
+.custom-node.automatic.enabled { width: 70px; height: 50px;	background: url("images/automatic-enabled.png"); }
+
+.custom-node.begin { width: 36px; height: 36px;	background: url("images/begin.png"); }
+.custom-node.begin.selected { width: 36px; height: 36px; background: url("images/begin-selected.png"); }
+.custom-node.begin.enabled { width: 36px; height: 36px;	background: url("images/begin-enabled.png"); }
+
+.custom-node.compensate { width: 37px; height: 37px; background: url("images/compensate.png"); }
+.custom-node.compensate.selected { width: 37px; height: 37px; background: url("images/compensate-selected.png"); }
+.custom-node.compensate.enabled { width: 37px; height: 37px; background: url("images/compensate-enabled.png"); }
+
+.custom-node.conditional { width: 43px; height: 43px; background: url("images/conditional.png"); }
+.custom-node.conditional.selected { width: 43px; height: 43px; background: url("images/conditional-selected.png"); }
+.custom-node.conditional.enabled { width: 43px; height: 43px; background: url("images/conditional-enabled.png"); }
+
+.custom-node.desicion { width: 70px; height: 50px; background: url("images/desicion.png"); }
+.custom-node.desicion.selected { width: 70px; height: 50px; background: url("images/desicion-selected.png"); }
+.custom-node.desicion.enabled { width: 70px; height: 50px; background: url("images/desicion-enabled.png"); }
+
+.custom-node.end { width: 36px; height: 36px; background: url("images/end.png"); }
+.custom-node.end.selected { width: 36px; height: 36px; background: url("images/end-selected.png"); }
+.custom-node.end.enabled { width: 36px; height: 36px; background: url("images/end-enabled.png"); }
+
+.custom-node.global-automatic { width: 70px; height: 50px; background: url("images/global-automatic.png"); }
+.custom-node.global-automatic.selected { width: 70px; height: 50px; background: url("images/global-automatic-selected.png"); }
+.custom-node.global-automatic.enabled { width: 70px; height: 50px; background: url("images/global-automatic-enabled.png"); }
+
+.custom-node.global-creation { width: 70px; height: 50px; background: url("images/global-creation.png"); }
+.custom-node.global-creation.selected { width: 70px; height: 50px; background: url("images/global-creation-selected.png"); }
+.custom-node.global-creation.enabled { width: 70px; height: 50px; background: url("images/global-creation-enabled.png"); }
+
+.custom-node.global { width: 70px; height: 50px; background: url("images/global.png"); }
+.custom-node.global.selected { width: 70px; height: 50px; background: url("images/global-selected.png"); }
+.custom-node.global.enabled { width: 70px; height: 50px; background: url("images/global-enabled.png"); }
+
+.custom-node.grab { width: 70px; height: 50px; background: url("images/grab.png"); }
+.custom-node.grab.selected { width: 70px; height: 50px; background: url("images/grab-selected.png"); }
+.custom-node.grab.enabled { width: 70px; height: 50px; background: url("images/grab-enabled.png"); }
+
+.custom-node.group { width: 77px; height: 56px;	background: url("images/group.png"); }
+.custom-node.group.selected { width: 77px; height: 56px; background: url("images/group-selected.png"); }
+.custom-node.group.enabled { width: 77px; height: 56px;	background: url("images/group-enabled.png"); }
+
+.custom-node.interactive { width: 70px; height: 50px; background: url("images/interactive.png"); }
+.custom-node.interactive.selected { width: 70px; height: 50px; background: url("images/interactive-selected.png"); }
+.custom-node.interactive.enabled { width: 70px; height: 50px; background: url("images/interactive-enabled.png"); }
+
+.custom-node.join { width: 43px; height: 43px; background: url("images/join.png"); }
+.custom-node.join.selected { width: 43px; height: 43px; background: url("images/join-selected.png"); }
+.custom-node.join.enabled { width: 43px; height: 43px; background: url("images/join-enabled.png"); }
+
+.custom-node.notification-wait { width: 37px; height: 37px; background: url("images/notification-wait.png"); }
+.custom-node.notification-wait.selected { width: 37px; height: 37px; background: url("images/notification-wait-selected.png"); }
+.custom-node.notification-wait.enabled { width: 37px; height: 37px;	background: url("images/notification-wait-enabled.png"); }
+
+.custom-node.or-split { width: 43px; height: 43px; background: url("images/or-split.png"); }
+.custom-node.or-split.selected { width: 43px; height: 43px;	background: url("images/or-split-selected.png"); }
+.custom-node.or-split.enabled { width: 43px; height: 43px; background: url("images/or-split-enabled.png"); }
+
+.custom-node.process-creation { width: 70px; height: 50px; background: url("images/process-creation.png"); }
+.custom-node.process-creation.selected { width: 70px; height: 50px; background: url("images/process-creation-selected.png"); }
+.custom-node.process-creation.enabled { width: 70px; height: 50px; background: url("images/process-creation-enabled.png"); }
+
+.custom-node.process-notification { width: 37px; height: 37px; background: url("images/process-notification.png"); }
+.custom-node.process-notification.selected { width: 37px; height: 37px; background: url("images/process-notification-selected.png"); }
+.custom-node.process-notification.enabled { width: 37px; height: 37px; background: url("images/process-notification-enabled.png"); }
+
+.custom-node.split-n { width: 43px; height: 43px; background: url("images/split-n.png"); }
+.custom-node.split-n.selected { width: 43px; height: 43px; background: url("images/split-n-selected.png"); }
+.custom-node.split-n.enabled { width: 43px; height: 43px; background: url("images/split-n-enabled.png"); }
+
+.custom-node.split { width: 43px; height: 43px; background: url("images/split.png"); }
+.custom-node.split.selected { width: 43px; height: 43px; background: url("images/split-selected.png"); }
+.custom-node.split.enabled { width: 43px; height: 43px;	background: url("images/split-enabled.png"); }
+
+.custom-node.subflow { width: 70px; height: 50px; background: url("images/subflow.png"); }
+.custom-node.subflow.selected { width: 70px; height: 50px; background: url("images/subflow-selected.png"); }
+.custom-node.subflow.enabled { width: 70px; height: 50px; background: url("images/subflow-enabled.png"); }
+
+.custom-node.termination-wait { width: 70px; height: 50px; background: url("images/termination-wait.png"); }
+.custom-node.termination-wait.selected { width: 70px; height: 50px; background: url("images/termination-wait-selected.png"); }
+.custom-node.termination-wait.enabled { width: 70px; height: 50px; background: url("images/termination-wait-enabled.png"); }
+
+.custom-node.timer { width: 37px; height: 37px; background: url("images/timer.png"); }
+.custom-node.timer.selected { width: 37px; height: 37px; background: url("images/timer-selected.png"); }
+.custom-node.timer.enabled { width: 37px; height: 37px; background: url("images/timer-enabled.png"); }

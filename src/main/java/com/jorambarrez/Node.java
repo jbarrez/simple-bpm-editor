@@ -13,57 +13,31 @@
 
 package com.jorambarrez;
 
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Component;
+
 
 
 /**
  * @author Joram Barrez
  */
-public class Node extends Label {
+public interface Node extends Component {
 
-  private static final long serialVersionUID = 1L;
+  static enum STATE {EMPTY, PROCESS_STEP, CANDIDATE};
   
-  protected static final String STYLE_NODE = "node";
-  protected static final String STYLE_CANDIDATE = "candidate";
+  public static final int DEFAULT_NODE_WIDTH = 100;
+  public static final int DEFAULT_NODE_HEIGHT = 50;
+  public static final int EMPTY_NODE_HEIGHT = 25;
+  public static final int HEIGHT_BETWEEN_NODES = DEFAULT_NODE_HEIGHT / 2;
   
-  protected boolean isEmpty = false;
-  protected boolean isCandidate;
+  public boolean isProcessStep();
+  public boolean isEmpty();
+  public boolean isCandidate();
+  public void changeState(STATE state);
   
-  public Node(String text) {
-    super(text);
-    addStyleName(STYLE_NODE); // default
-  }
-  
-  public Node(String text, int mode) {
-    super(text, mode);
-  }
-
-  public boolean isEmpty() {
-    return isEmpty;
-  }
-
-  public void setEmpty(boolean isEmpty) {
-    this.isEmpty = isEmpty;
-    
-    if (isEmpty) {
-      removeStyleName(STYLE_NODE);
-    } else {
-      setStyleName(STYLE_NODE);
-    }
-  }
-  
-  public boolean isCandidate() {
-    return isCandidate;
-  }
-  
-  public void setCandidate(boolean isCandidate) {
-    this.isCandidate = isCandidate;
-    
-    if (isCandidate) {
-      setStyleName(STYLE_CANDIDATE);
-    } else {
-      setStyleName(STYLE_NODE);
-    }
-  }
+  public int getNodeWidth();
+  public void setNodeWidth(int width);
+  public void setNodeHeight(int height);
+  public int getNodeHeight();
+  public void setText(String text);
   
 }
