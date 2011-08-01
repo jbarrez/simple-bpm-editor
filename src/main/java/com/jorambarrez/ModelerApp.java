@@ -26,15 +26,17 @@ public class ModelerApp extends Application implements HttpServletRequestListene
 
   protected static ThreadLocal<ModelerApp> current = new ThreadLocal<ModelerApp>();
   
+  protected Window window;
   protected FlowEditor flowEditor;
   
   public void init() {
-    Window window = new Window("Flow editor prototype");
+    window = new Window("Flow editor prototype");
+    window.setSizeFull();
     setTheme("activiti");
     setMainWindow(window);
 
     flowEditor = new FlowEditor();
-    window.addComponent(flowEditor);
+    window.setContent(flowEditor);
     
 //    tryGraphWidget(window);
   }
@@ -108,6 +110,10 @@ public class ModelerApp extends Application implements HttpServletRequestListene
 
     
     window.setContent(layout);
+  }
+  
+  public Window getWindow() {
+    return window;
   }
   
   public FlowEditor getFlowEditor() {

@@ -27,12 +27,6 @@ public class BasicNode extends CssLayout implements Node {
 
   private static final long serialVersionUID = 1L;
   
-  // Static stuff: heights, styles, etc.
-  public static final int DEFAULT_NODE_WIDTH = 100;
-  public static final int DEFAULT_NODE_HEIGHT = 50;
-  public static final int EMPTY_NODE_HEIGHT = 25;
-  public static final int HEIGHT_BETWEEN_NODES = DEFAULT_NODE_HEIGHT / 2;
-  
   // Static stuff
   protected static final String STYLE_PROCESS_STEP = "process-step";
   protected static final String STYLE_PROCESS_STEP_TEXT = "process-step-text"; 
@@ -43,6 +37,7 @@ public class BasicNode extends CssLayout implements Node {
   protected STATE currentState = STATE.PROCESS_STEP;
   protected int width;
   protected int height;
+  protected int index;
   
   protected DragAndDropWrapper dragAndDropWrapper;
   protected HorizontalLayout innerLayout;
@@ -62,7 +57,6 @@ public class BasicNode extends CssLayout implements Node {
     innerLayout.addComponent(label);
     innerLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
     
-    addListener(new NodeClickListener(this));
   }
   
   public boolean isProcessStep() {
@@ -122,9 +116,17 @@ public class BasicNode extends CssLayout implements Node {
     label.setValue(text);
   }
   
+  public int getIndex() {
+    return index;
+  }
+  
+  public void setIndex(int index) {
+    this.index = index;
+  }
+
   @Override
   public String toString() {
     return "[" + currentState + "] '" + label +"'";
   }
-  
+
 }

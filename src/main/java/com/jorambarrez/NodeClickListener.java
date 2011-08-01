@@ -27,6 +27,8 @@ public class NodeClickListener implements LayoutClickListener {
   
   protected Node node;
   
+  protected static int counter = 2; // temporary
+  
   public NodeClickListener(Node node) {
     this.node = node;
   }
@@ -34,9 +36,11 @@ public class NodeClickListener implements LayoutClickListener {
   public void layoutClick(LayoutClickEvent event) {
     if (node.isCandidate()) {
       node.changeState(STATE.PROCESS_STEP);
+      node.setText("Step " + counter++);
       
       // TODO: this should be done by event router!
       ModelerApp.get().getFlowEditor().notifyNodesChanged();
+      ModelerApp.get().getWindow().scrollIntoView(node);
     }
   }
 

@@ -23,6 +23,8 @@ public class DndNode extends DragAndDropWrapper implements Node {
 
   private static final long serialVersionUID = 1L;
   
+  protected static final String STYLE_DND_NODE = "dnd-node";
+  
   protected BasicNode wrappedNode;
 
   public DndNode(STATE state) {
@@ -30,11 +32,14 @@ public class DndNode extends DragAndDropWrapper implements Node {
     this.wrappedNode = (BasicNode) getCompositionRoot(); // DndWrapper extends custom component
       
     setDragStartMode(DragStartMode.COMPONENT);
+    addStyleName(STYLE_DND_NODE);
     
     // The change state can update the size (so changing the size is done afterwards)
     changeState(state);
     setHeight(wrappedNode.getNodeHeight(), UNITS_PIXELS);
     setWidth(wrappedNode.getWidth(), UNITS_PIXELS);
+    
+    wrappedNode.addListener(new NodeClickListener(this));
   }
   
   public DndNode(STATE state, int width, int height) {
@@ -68,10 +73,13 @@ public class DndNode extends DragAndDropWrapper implements Node {
   public void changeState(STATE state) {
     wrappedNode.changeState(state);
     
-    // Change drop handler
-    if (isEmpty() || isCandidate() && getDropHandler() == null) {
-      setDropHandler(new NodeDropHandler(this));
+    if (isEmpty() || isCandidate()) {
+      setDragStartMode(DragStartMode.NONE);
+      if (getDropHandler() == null) {
+        setDropHandler(new NodeDropHandler(this));
+      }
     } else {
+      setDragStartMode(DragStartMode.COMPONENT);
       setDropHandler(null);
     }
   }
@@ -98,9 +106,17 @@ public class DndNode extends DragAndDropWrapper implements Node {
     wrappedNode.setText(text);
   }
   
+  public void setIndex(int index) {
+    wrappedNode.setIndex(index);
+  }
+
+  public int getIndex() {
+    return wrappedNode.getIndex();
+  }
+  
   @Override
   public String toString() {
     return wrappedNode.toString();
   }
-  
+
 }

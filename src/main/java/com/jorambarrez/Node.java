@@ -24,10 +24,9 @@ public interface Node extends Component {
 
   static enum STATE {EMPTY, PROCESS_STEP, CANDIDATE};
   
-  public static final int DEFAULT_NODE_WIDTH = 100;
-  public static final int DEFAULT_NODE_HEIGHT = 50;
-  public static final int EMPTY_NODE_HEIGHT = 25;
-  public static final int HEIGHT_BETWEEN_NODES = DEFAULT_NODE_HEIGHT / 2;
+  public static final int DEFAULT_NODE_WIDTH = 350;
+  public static final int DEFAULT_NODE_HEIGHT = 30;
+  public static final int EMPTY_NODE_HEIGHT = 15;
   
   public boolean isProcessStep();
   public boolean isEmpty();
@@ -39,5 +38,7 @@ public interface Node extends Component {
   public void setNodeHeight(int height);
   public int getNodeHeight();
   public void setText(String text);
+  public void setIndex(int index);
+  public int getIndex();
   
 }

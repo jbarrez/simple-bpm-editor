@@ -17,7 +17,6 @@ import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
-import com.vaadin.ui.DragAndDropWrapper.WrapperTargetDetails;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 
 
@@ -42,14 +41,19 @@ public class NodeDropHandler implements DropHandler {
     
     WrapperTransferable wrapperTransferable =
       (WrapperTransferable) event.getTransferable();
-    WrapperTargetDetails details =
-      (WrapperTargetDetails) event.getTargetDetails();
-    
     Node srcNode = (Node) wrapperTransferable.getSourceComponent();
-    if (targetNode.isEmpty()) {
-      
-      // TODO: use event router
+
+    
+    if (targetNode.isEmpty() && nodeActuallyMoved(srcNode)) { // process step node dragged to an empty node
+      // TODO: use event router!
       ModelerApp.get().getFlowEditor().replaceEmptyNode(targetNode, srcNode);
-    }
+    } 
   }
+  
+  protected boolean nodeActuallyMoved(Node srcNode) {
+    int srcIndex = srcNode.getIndex();
+    int targetIndex = targetNode.getIndex();
+    return Math.abs(targetIndex - srcIndex) > 1;  
+  }
+  
 }
