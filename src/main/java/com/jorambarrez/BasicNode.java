@@ -136,6 +136,10 @@ public class BasicNode extends VerticalLayout implements Node {
      *  The layout will get its width from the label, and the text field will use that. 
      */
     setWidth(-1, UNITS_PIXELS); // note there is a min-width in styles.css!
+    invisibleLabel = new Label(text);
+    invisibleLabel.setHeight(1, UNITS_PIXELS);
+    invisibleLabel.addStyleName("invisible-label");
+    invisibleLabel.setSizeUndefined();
     
     textField = new TextField();
     if (text != null) {
@@ -173,16 +177,17 @@ public class BasicNode extends VerticalLayout implements Node {
     textField.addListener(new TextChangeListener() {
       private static final long serialVersionUID = 1L;
       public void textChange(TextChangeEvent event) {
-        invisibleLabel.setValue(event.getText()); // see comments above
+        //invisibleLabel.setValue(event.getText()); // see comments above
+        System.out.println("Setting width to " + event.getText().length());
+        textField.setColumns((int) (0.6 * event.getText().length())); // colums != # chars
+        textField.setValue(event.getText()); // apparantly this is needed ... don't know why
       }
     });
     
-    invisibleLabel = new Label(text);
-    invisibleLabel.setHeight(0, UNITS_PIXELS);
-    invisibleLabel.addStyleName("invisible-label");
-    invisibleLabel.setSizeUndefined();
-    addComponent(invisibleLabel);
-    setComponentAlignment(invisibleLabel, Alignment.MIDDLE_CENTER);
+    
+    // Add the invisible label at the end (or else the textfield will be pushed down)
+    //addComponent(invisibleLabel);
+    //setComponentAlignment(invisibleLabel, Alignment.MIDDLE_CENTER);
     
   }
   
@@ -190,6 +195,8 @@ public class BasicNode extends VerticalLayout implements Node {
     removeComponent(textField);
     removeComponent(invisibleLabel);
     initLabel(text);
+    editable = false;
+    setWidth(text.length() * 1.0f, UNITS_EM);
   }
   
   public int getNodeWidth() {

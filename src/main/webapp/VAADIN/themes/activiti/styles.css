@@ -19,7 +19,7 @@
   -webkit-border-radius: 10px;
   border-radius: 10px;
 	color: white;
-	font: 1.4em arial,sans-serif;
+	font: 16px arial,sans-serif;
 	cursor: pointer;
 	background-color: #4F81BD;
 	min-width: 350px;
@@ -30,13 +30,14 @@ input.v-textfield.process-step-textfield {
   border: none;
   text-align: center;
   color: white;
-  font: 1em arial,sans-serif;
+  font: 16px arial,sans-serif;
   padding-top: 12px;
   min-width: 350px;
 }
 
 .process-step-text {
   cursor: pointer;
+  text-align: center;
 }
 
 .invisible-label {
