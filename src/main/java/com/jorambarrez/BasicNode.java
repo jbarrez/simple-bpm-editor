@@ -183,6 +183,7 @@ public class BasicNode extends VerticalLayout implements Node {
     invisibleLabel.setSizeUndefined();
     addComponent(invisibleLabel);
     setComponentAlignment(invisibleLabel, Alignment.MIDDLE_CENTER);
+    
   }
   
   protected void switchBackToLabel(String text) {

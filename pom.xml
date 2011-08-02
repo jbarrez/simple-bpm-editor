@@ -194,6 +194,12 @@
       <scope>system</scope>
       <systemPath>${project.basedir}/lib/lib-gwt-svg-0.5.2.jar</systemPath>
     </dependency>
+    
+    <dependency>
+   <groupId>org.vaadin.addons</groupId>
+   <artifactId>dashlayout</artifactId>
+   <version>0.1.5-beta</version>
+</dependency>
 		
   </dependencies>
 

@@ -10,4 +10,8 @@
     <inherits name="com.pantar.widget.graph.GraphWidget" />
 
     <inherits name="com.pantar.widget.graph.GraphWidget" />
+
+    <inherits name="com.pantar.widget.graph.GraphWidget" />
+
+    <inherits name="com.vaadin.incubator.dashlayout.DashLayoutWidgetSet" />
 </module>

@@ -14,6 +14,8 @@
 package com.jorambarrez;
 
 import com.jorambarrez.Node.STATE;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Component;
 import com.vaadin.ui.VerticalLayout;
 
 /**
@@ -31,7 +33,6 @@ public class ModelingPanel extends VerticalLayout {
     setSpacing(false);
     setMargin(false);
     
-    setWidth(Node.DEFAULT_NODE_WIDTH + 4, UNITS_PIXELS); // +4: adding some px for the borders
     setHeight(Node.DEFAULT_NODE_HEIGHT * 2 + 2 * Node.EMPTY_NODE_HEIGHT, UNITS_PIXELS);
     
     // Initial setup
@@ -76,6 +77,12 @@ public class ModelingPanel extends VerticalLayout {
   
   protected Node createNode(STATE state, String text) {
     return new DndNode(state, text);
+  }
+  
+  @Override
+  public void addComponent(Component c) {
+    super.addComponent(c);
+    setComponentAlignment(c, Alignment.MIDDLE_CENTER);
   }
   
   public Node getNode(int row) {
@@ -145,20 +152,6 @@ public class ModelingPanel extends VerticalLayout {
     // Change total layout size
     setHeight(newHeight, UNITS_PIXELS);
       
-  }
-  
-  public void notifyNodeWidthChanged(float newWidthInEm) {
-    System.out.println("New width = " + newWidthInEm);
-    if (getWidthUnits() == UNITS_EM) {
-      System.out.println("First if");
-      if (getWidth() < newWidthInEm) {
-        System.out.println("current width " + getWidth());
-        setWidth(newWidthInEm, UNITS_EM);
-      }
-    } else {
-      System.out.println("Else");
-      setWidth(newWidthInEm, UNITS_EM); // min-width will take care of it, if it is smaller
-    }
   }
   
 }

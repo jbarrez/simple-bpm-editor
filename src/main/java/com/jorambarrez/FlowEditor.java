@@ -13,7 +13,6 @@
 
 package com.jorambarrez;
 
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.HorizontalLayout;
 
 /**
@@ -31,7 +30,6 @@ public class FlowEditor extends HorizontalLayout {
   public FlowEditor() {
     setSizeFull();
     setSpacing(true);
-    addStyleName(STYLE_FLOW_EDITOR);
   }
   
   @Override
@@ -39,12 +37,15 @@ public class FlowEditor extends HorizontalLayout {
     super.attach();
     
     modelingPanel = new ModelingPanel();
+    modelingPanel.setWidth(100, UNITS_PERCENTAGE);
     addComponent(modelingPanel);
-    setComponentAlignment(modelingPanel, Alignment.TOP_RIGHT);
+    setExpandRatio(modelingPanel, 0.8f);
     
     propertyPanel = new PropertyPanel();
+    propertyPanel.setWidth(100, UNITS_PERCENTAGE);
+    propertyPanel.setHeight(100, UNITS_PERCENTAGE);
     addComponent(propertyPanel);
-    setComponentAlignment(propertyPanel, Alignment.BOTTOM_RIGHT);
+    setExpandRatio(propertyPanel, 0.2f);
   }
   
   public void replaceEmptyNode(Node emptyNode, Node newNode) {
@@ -60,10 +61,5 @@ public class FlowEditor extends HorizontalLayout {
   public void notifyNodeTypeChanged() {
     modelingPanel.notifyNodesChanged();
   }
-  
-  public void notifyNodeWidthChanged(float newWidthInEm) {
-    modelingPanel.notifyNodeWidthChanged(newWidthInEm);
-  }
-  
   
 }

@@ -58,8 +58,6 @@ public class PropertyPanel extends VerticalLayout {
   protected static final String STYLE_PROPERTY_LAYOUT = "property-layout";
   
   public PropertyPanel() {
-    setWidth(250, UNITS_PIXELS);
-    setHeight(100, UNITS_PERCENTAGE);
     addStyleName(STYLE_PROPERTY_LAYOUT);
     setMargin(false, false, true, false);
   }
@@ -68,9 +66,9 @@ public class PropertyPanel extends VerticalLayout {
   public void attach() {
     super.attach();
     
-    Label label = new Label("&nbsp;", Label.CONTENT_XHTML);
-    addComponent(label);
-    setExpandRatio(label, 1.0f);
+//    Label label = new Label("&nbsp;", Label.CONTENT_XHTML);
+//    addComponent(label);
+//    setExpandRatio(label, 1.0f);
     
     addTrash();
   }
