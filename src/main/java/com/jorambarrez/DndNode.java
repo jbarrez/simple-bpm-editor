@@ -83,6 +83,10 @@ public class DndNode extends DragAndDropWrapper implements Node {
       setDropHandler(null);
     }
   }
+  
+  public void makeEditable() {
+    wrappedNode.makeEditable();
+  }
 
   public int getNodeWidth() {
     return wrappedNode.getNodeWidth();

@@ -13,25 +13,32 @@
 
 package com.jorambarrez;
 
+import com.vaadin.event.FieldEvents.TextChangeEvent;
+import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.event.ShortcutListener;
+import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DragAndDropWrapper;
-import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 
 
 /**
  * @author Joram Barrez
  */
-public class BasicNode extends CssLayout implements Node {
+public class BasicNode extends VerticalLayout implements Node {
 
   private static final long serialVersionUID = 1L;
   
   // Static stuff
+  protected static final String STYLE_NODE = "node";
   protected static final String STYLE_PROCESS_STEP = "process-step";
   protected static final String STYLE_PROCESS_STEP_TEXT = "process-step-text"; 
   protected static final String STYLE_CANDIDATE = "candidate";
   protected static final String STYLE_EMPTY = "empty";
+  protected static final String STYLE_PROCESS_STEP_TEXTFIELD = "process-step-textfield ";
 
   // Instance vars
   protected STATE currentState = STATE.PROCESS_STEP;
@@ -40,23 +47,31 @@ public class BasicNode extends CssLayout implements Node {
   protected int index;
   
   protected DragAndDropWrapper dragAndDropWrapper;
-  protected HorizontalLayout innerLayout;
+  protected boolean editable;
   protected Label label;
+  protected String originalText;
+  protected Label invisibleLabel;
+  protected TextField textField;
   
   public BasicNode() {
     setNodeWidth(DEFAULT_NODE_WIDTH);
     setNodeHeight(DEFAULT_NODE_HEIGHT);
     
-    innerLayout = new HorizontalLayout();
-    innerLayout.setSizeFull();
-    addComponent(innerLayout);
-    
-    label = new Label();
+    initLabel(null);
+  }
+  
+  protected void initLabel(String text) {
+    if (text != null) {
+      label = new Label(text);
+    } else {
+      label = new Label();
+    }
     label.addStyleName(STYLE_PROCESS_STEP_TEXT);
     label.setSizeUndefined();
-    innerLayout.addComponent(label);
-    innerLayout.setComponentAlignment(label, Alignment.MIDDLE_CENTER);
+    addComponent(label);
+    setComponentAlignment(label, Alignment.MIDDLE_CENTER);
     
+    originalText = text;
   }
   
   public boolean isProcessStep() {
@@ -80,18 +95,100 @@ public class BasicNode extends CssLayout implements Node {
       label.setValue("&nbsp");
       label.setContentMode(Label.CONTENT_XHTML);
       setNodeHeight(EMPTY_NODE_HEIGHT);
-      innerLayout.addStyleName(STYLE_EMPTY);
+      addStyleName(STYLE_EMPTY);
     } else if(currentState.equals(STATE.CANDIDATE)) {
-      innerLayout.addStyleName(STYLE_CANDIDATE);
+      addStyleName(STYLE_CANDIDATE);
     } else {
-      innerLayout.addStyleName(STYLE_PROCESS_STEP);
+      addStyleName(STYLE_PROCESS_STEP);
     }
   }
   
   protected void clearStyles() {
-    innerLayout.removeStyleName(STYLE_PROCESS_STEP);
-    innerLayout.removeStyleName(STYLE_CANDIDATE);
-    innerLayout.removeStyleName(STYLE_EMPTY);
+    removeStyleName(STYLE_PROCESS_STEP);
+    removeStyleName(STYLE_CANDIDATE);
+    removeStyleName(STYLE_EMPTY);
+  }
+  
+  public void makeEditable() {
+    if (!currentState.equals(STATE.PROCESS_STEP)) {
+      throw new RuntimeException("It is only possible to make a process step editable");
+    }
+    
+    if (editable) {
+      throw new RuntimeException("Node is already editable");
+    }
+    
+    editable = true;
+    String labelText = (String) label.getValue();
+    removeComponent(label);
+    initTextField(labelText);
+  }
+  
+  protected void initTextField(String text) {
+    
+    /* 
+     * Using hack from http://vaadin.com/book/-/page/components.textfield.html :
+     * 
+     * There is no standard way in HTML for setting the width exactly to a number of letters 
+     * (in a monospaced font). You can trick your way around this restriction by putting the
+     *  text field in an undefined-width VerticalLayout together with an undefined-width Label 
+     *  that contains a sample text, and setting the width of the text field as 100%. 
+     *  The layout will get its width from the label, and the text field will use that. 
+     */
+    setWidth(-1, UNITS_PIXELS); // note there is a min-width in styles.css!
+    
+    textField = new TextField();
+    if (text != null) {
+      textField.setValue(text);
+      textField.selectAll();
+      textField.setColumns(text.length());
+    }
+    textField.setWidth(100, UNITS_PERCENTAGE); // see explanation above in comments
+    textField.addStyleName(STYLE_PROCESS_STEP_TEXTFIELD);
+    textField.focus();
+    
+    addComponent(textField);
+    setComponentAlignment(textField, Alignment.MIDDLE_CENTER);
+    
+    // Send a text change event every 0.5 seconds
+    textField.setTextChangeEventMode(TextChangeEventMode.TIMEOUT);
+    textField.setTextChangeTimeout(500);
+    
+    // Listeners: for enter key (= accept value), escape (= cancel) and auto expanding
+    
+    textField.addShortcutListener(new ShortcutListener(null, KeyCode.ENTER, null) {
+      private static final long serialVersionUID = 1L;
+      public void handleAction(Object sender, Object target) {
+        switchBackToLabel((String) textField.getValue());
+      }
+    });
+    
+    textField.addShortcutListener(new ShortcutListener(null, KeyCode.ESCAPE, null) {
+      private static final long serialVersionUID = 1L;
+      public void handleAction(Object sender, Object target) {
+        switchBackToLabel(originalText);
+      }
+    });
+    
+    textField.addListener(new TextChangeListener() {
+      private static final long serialVersionUID = 1L;
+      public void textChange(TextChangeEvent event) {
+        invisibleLabel.setValue(event.getText()); // see comments above
+      }
+    });
+    
+    invisibleLabel = new Label(text);
+    invisibleLabel.setHeight(0, UNITS_PIXELS);
+    invisibleLabel.addStyleName("invisible-label");
+    invisibleLabel.setSizeUndefined();
+    addComponent(invisibleLabel);
+    setComponentAlignment(invisibleLabel, Alignment.MIDDLE_CENTER);
+  }
+  
+  protected void switchBackToLabel(String text) {
+    removeComponent(textField);
+    removeComponent(invisibleLabel);
+    initLabel(text);
   }
   
   public int getNodeWidth() {
@@ -114,6 +211,7 @@ public class BasicNode extends CssLayout implements Node {
 
   public void setText(String text) {
     label.setValue(text);
+    originalText = text;
   }
   
   public int getIndex() {

@@ -16,6 +16,7 @@ package com.jorambarrez;
 import com.jorambarrez.Node.STATE;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.ui.Label;
 
 
 /**
@@ -34,13 +35,24 @@ public class NodeClickListener implements LayoutClickListener {
   }
 
   public void layoutClick(LayoutClickEvent event) {
+    
+    // If clicked anywhere on a candidate node, make it a process step
     if (node.isCandidate()) {
       node.changeState(STATE.PROCESS_STEP);
       node.setText("Step " + counter++);
       
       // TODO: this should be done by event router!
-      ModelerApp.get().getFlowEditor().notifyNodesChanged();
+      ModelerApp.get().getFlowEditor().notifyNodeTypeChanged();
       ModelerApp.get().getWindow().scrollIntoView(node);
+      
+    } else if (node.isProcessStep()) {
+      
+      // If clicked on the text, or double clicked, the label should become editable
+      if (event.isDoubleClick() || event.getClickedComponent() instanceof Label) {
+        node.makeEditable();
+      }
+
+      // If clicked (no double click) the property panel should just change
     }
   }
 

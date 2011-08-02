@@ -23,12 +23,15 @@ public class FlowEditor extends HorizontalLayout {
 
   private static final long serialVersionUID = 1L;
   
+  protected static final String STYLE_FLOW_EDITOR = "flow-editor";
+  
   protected ModelingPanel modelingPanel;
   protected PropertyPanel propertyPanel;
   
   public FlowEditor() {
     setSizeFull();
     setSpacing(true);
+    addStyleName(STYLE_FLOW_EDITOR);
   }
   
   @Override
@@ -54,8 +57,13 @@ public class FlowEditor extends HorizontalLayout {
     modelingPanel.notifyNodesChanged();
   }
   
-  public void notifyNodesChanged() {
+  public void notifyNodeTypeChanged() {
     modelingPanel.notifyNodesChanged();
   }
+  
+  public void notifyNodeWidthChanged(float newWidthInEm) {
+    modelingPanel.notifyNodeWidthChanged(newWidthInEm);
+  }
+  
   
 }

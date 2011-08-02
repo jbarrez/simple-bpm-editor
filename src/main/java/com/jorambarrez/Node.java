@@ -32,6 +32,7 @@ public interface Node extends Component {
   public boolean isEmpty();
   public boolean isCandidate();
   public void changeState(STATE state);
+  public void makeEditable();
   
   public int getNodeWidth();
   public void setNodeWidth(int width);

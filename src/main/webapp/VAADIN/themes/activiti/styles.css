@@ -1,11 +1,17 @@
 @import url(../reindeer/styles.css);
 
 .border {
-  border: 1px solid red;
+  border: 10px solid red;
 }
 
 .green {
   background-color: green;
+}
+
+.flow-editor {
+  -moz-box-shadow:inset 0 0 5px #000000;
+   -webkit-box-shadow:inset 0 0 5px #000000;
+   box-shadow:inset 0 0 5px #000000;
 }
 
 .process-step {
@@ -13,13 +19,19 @@
   -webkit-border-radius: 10px;
   border-radius: 10px;
 	color: white;
-	font:16px arial,sans-serif;
+	font: 1.4em arial,sans-serif;
 	cursor: pointer;
 	background-color: #4F81BD;
 }
 
 .process-step-text {
   cursor: pointer;
+}
+
+.invisible-label {
+  visibility: hidden;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 .candidate:hover {
@@ -43,6 +55,14 @@
    -moz-box-shadow:inset 0 0 5px #000000;
    -webkit-box-shadow:inset 0 0 5px #000000;
    box-shadow:inset 0 0 5px #000000;
-  
+}
+
+input.v-textfield.process-step-textfield {
+  background: none;
+  border: none;
+  text-align: center;
+  color: white;
+  font: 1em arial,sans-serif;
+  padding-top: 12px;
 }
 

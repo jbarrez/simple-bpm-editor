@@ -23,9 +23,6 @@ public class ModelingPanel extends VerticalLayout {
 
   private static final long serialVersionUID = 1L;
   
-  protected int currentWidth;
-  protected int currentHeight;
-  
   public ModelingPanel() {
   }
   
@@ -148,6 +145,20 @@ public class ModelingPanel extends VerticalLayout {
     // Change total layout size
     setHeight(newHeight, UNITS_PIXELS);
       
+  }
+  
+  public void notifyNodeWidthChanged(float newWidthInEm) {
+    System.out.println("New width = " + newWidthInEm);
+    if (getWidthUnits() == UNITS_EM) {
+      System.out.println("First if");
+      if (getWidth() < newWidthInEm) {
+        System.out.println("current width " + getWidth());
+        setWidth(newWidthInEm, UNITS_EM);
+      }
+    } else {
+      System.out.println("Else");
+      setWidth(newWidthInEm, UNITS_EM); // min-width will take care of it, if it is smaller
+    }
   }
   
 }

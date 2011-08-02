@@ -36,6 +36,7 @@ import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
@@ -75,12 +76,19 @@ public class PropertyPanel extends VerticalLayout {
   }
 
   protected void addTrash() {
+    
     Embedded trashIcon = new Embedded(null, Images.MODELER_TRASH);
     trashIcon.setWidth(63, UNITS_PIXELS);
     trashIcon.setHeight(61, UNITS_PIXELS);
     trashIcon.setType(Embedded.TYPE_IMAGE);
+
+    VerticalLayout trashLayout = new VerticalLayout();
+    trashLayout.setWidth(120, UNITS_PIXELS);
+    trashLayout.setHeight(120, UNITS_PIXELS);
+    trashLayout.addComponent(trashIcon);
+    trashLayout.setComponentAlignment(trashIcon, Alignment.MIDDLE_CENTER);
     
-    DragAndDropWrapper dragAndDropWrapper = new DragAndDropWrapper(trashIcon);
+    DragAndDropWrapper dragAndDropWrapper = new DragAndDropWrapper(trashLayout);
     dragAndDropWrapper.setDragStartMode(DragStartMode.NONE);
     dragAndDropWrapper.setSizeUndefined();
     addComponent(dragAndDropWrapper);
