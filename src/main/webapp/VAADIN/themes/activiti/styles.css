@@ -22,7 +22,6 @@
 	font: 16px arial,sans-serif;
 	cursor: pointer;
 	background-color: #4F81BD;
-	min-width: 350px;
 }
 
 input.v-textfield.process-step-textfield {
@@ -38,12 +37,7 @@ input.v-textfield.process-step-textfield {
 .process-step-text {
   cursor: pointer;
   text-align: center;
-}
-
-.invisible-label {
-  visibility: hidden;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding-left: 20px;
 }
 
 .candidate:hover {
@@ -69,7 +63,7 @@ input.v-textfield.process-step-textfield {
    box-shadow:inset 0 0 5px #000000;
 }
 
-.center {
-  text-align: center;
+.property-panel-title {
+  color:#007dc3;
+  font:19px Arial, Helvetica, sans-serif;
 }
-

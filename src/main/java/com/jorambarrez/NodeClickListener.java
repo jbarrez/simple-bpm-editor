@@ -17,6 +17,7 @@ import com.jorambarrez.Node.STATE;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
 
 
 /**
@@ -48,11 +49,15 @@ public class NodeClickListener implements LayoutClickListener {
     } else if (node.isProcessStep()) {
       
       // If clicked on the text, or double clicked, the label should become editable
-      if (event.isDoubleClick() || event.getClickedComponent() instanceof Label) {
+      if ((event.isDoubleClick() && event.getClickedComponent() instanceof Layout)
+              || event.getClickedComponent() instanceof Label) {
         node.makeEditable();
+      } else if (!event.isDoubleClick()) {  // If clicked (no double click) the property panel should just change
+        
+        // TODO: with event router!
+        ModelerApp.get().getFlowEditor().showNodeProperties(node);
       }
 
-      // If clicked (no double click) the property panel should just change
     }
   }
 

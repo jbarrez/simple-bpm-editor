@@ -60,6 +60,12 @@ public class BasicNode extends VerticalLayout implements Node {
     initLabel(null);
   }
   
+  public BasicNode(String text) {
+    setNodeWidth(DEFAULT_NODE_WIDTH);
+    setNodeHeight(DEFAULT_NODE_HEIGHT);
+    initLabel(text);
+  }
+  
   protected void initLabel(String text) {
     if (text != null) {
       label = new Label(text);
@@ -135,17 +141,16 @@ public class BasicNode extends VerticalLayout implements Node {
      *  that contains a sample text, and setting the width of the text field as 100%. 
      *  The layout will get its width from the label, and the text field will use that. 
      */
-    setWidth(-1, UNITS_PIXELS); // note there is a min-width in styles.css!
-    invisibleLabel = new Label(text);
-    invisibleLabel.setHeight(1, UNITS_PIXELS);
-    invisibleLabel.addStyleName("invisible-label");
-    invisibleLabel.setSizeUndefined();
+//    setWidth(-1, UNITS_PIXELS); // note there is a min-width in styles.css!
+//    invisibleLabel = new Label(text);
+//    invisibleLabel.setHeight(1, UNITS_PIXELS);
+//    invisibleLabel.addStyleName("invisible-label");
+//    invisibleLabel.setSizeUndefined();
     
     textField = new TextField();
     if (text != null) {
       textField.setValue(text);
       textField.selectAll();
-      textField.setColumns(text.length());
     }
     textField.setWidth(100, UNITS_PERCENTAGE); // see explanation above in comments
     textField.addStyleName(STYLE_PROCESS_STEP_TEXTFIELD);
@@ -178,9 +183,9 @@ public class BasicNode extends VerticalLayout implements Node {
       private static final long serialVersionUID = 1L;
       public void textChange(TextChangeEvent event) {
         //invisibleLabel.setValue(event.getText()); // see comments above
-        System.out.println("Setting width to " + event.getText().length());
-        textField.setColumns((int) (0.6 * event.getText().length())); // colums != # chars
-        textField.setValue(event.getText()); // apparantly this is needed ... don't know why
+        System.out.println("Text change event");
+//        textField.setColumns((int) (0.6 * event.getText().length())); // colums != # chars
+//        textField.setValue(event.getText()); // apparantly this is needed ... don't know why
       }
     });
     
@@ -193,10 +198,9 @@ public class BasicNode extends VerticalLayout implements Node {
   
   protected void switchBackToLabel(String text) {
     removeComponent(textField);
-    removeComponent(invisibleLabel);
+//    removeComponent(invisibleLabel);
     initLabel(text);
     editable = false;
-    setWidth(text.length() * 1.0f, UNITS_EM);
   }
   
   public int getNodeWidth() {
@@ -220,6 +224,14 @@ public class BasicNode extends VerticalLayout implements Node {
   public void setText(String text) {
     label.setValue(text);
     originalText = text;
+  }
+  
+  public String getText() {
+    if (label != null) {
+      return (String) label.getValue();
+    } else {
+      return originalText;
+    }
   }
   
   public int getIndex() {

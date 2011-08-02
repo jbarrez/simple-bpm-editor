@@ -62,4 +62,8 @@ public class FlowEditor extends HorizontalLayout {
     modelingPanel.notifyNodesChanged();
   }
   
+  public void showNodeProperties(Node node) {
+    propertyPanel.showNodeProperties(node);
+  }
+  
 }

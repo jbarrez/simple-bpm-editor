@@ -36,11 +36,11 @@ import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.Alignment;
-import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.Embedded;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 
@@ -56,25 +56,39 @@ public class PropertyPanel extends VerticalLayout {
   private static final long serialVersionUID = 1L;
   
   protected static final String STYLE_PROPERTY_LAYOUT = "property-layout";
+  protected static final String STYLE_PROPERTY_PANEL_TITLE = "property-panel-title ";
+  
+  protected Label title;
+  protected GridLayout propertyLayout;
+  protected Node currentNode;
   
   public PropertyPanel() {
     addStyleName(STYLE_PROPERTY_LAYOUT);
-    setMargin(false, false, true, false);
+    setMargin(true, false, true, true);
   }
   
   @Override
   public void attach() {
     super.attach();
     
-//    Label label = new Label("&nbsp;", Label.CONTENT_XHTML);
-//    addComponent(label);
-//    setExpandRatio(label, 1.0f);
-    
-    addTrash();
+    initTitle();
+    initProperyLayout();
+    initTrashIcon();
   }
-
-  protected void addTrash() {
-    
+  
+  protected void initTitle() {
+    title = new Label("&nbsp;", Label.CONTENT_XHTML);
+    title.addStyleName(STYLE_PROPERTY_PANEL_TITLE);
+    addComponent(title);
+  }
+  
+  protected void initProperyLayout() {
+    propertyLayout = new GridLayout();
+    propertyLayout.setColumns(2);
+    propertyLayout.setSpacing(true);
+  }
+  
+  protected void initTrashIcon() {
     Embedded trashIcon = new Embedded(null, Images.MODELER_TRASH);
     trashIcon.setWidth(63, UNITS_PIXELS);
     trashIcon.setHeight(61, UNITS_PIXELS);
@@ -93,6 +107,7 @@ public class PropertyPanel extends VerticalLayout {
     setComponentAlignment(dragAndDropWrapper, Alignment.BOTTOM_CENTER);
     
     dragAndDropWrapper.setDropHandler(new DropHandler() {
+      private static final long serialVersionUID = 1L;
       public AcceptCriterion getAcceptCriterion() {
         return AcceptAll.get();
       }
@@ -105,6 +120,15 @@ public class PropertyPanel extends VerticalLayout {
         ModelerApp.get().getFlowEditor().removeNode(srcNode);
       }
     });
+  }
+  
+  public void showNodeProperties(Node node) {
+    currentNode = node;
+    
+    title.setValue(node.getText());
+    title.setContentMode(Label.CONTENT_DEFAULT);
+    
+    
   }
 
 }

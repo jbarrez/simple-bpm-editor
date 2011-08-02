@@ -197,8 +197,8 @@
     
     <dependency>
    <groupId>org.vaadin.addons</groupId>
-   <artifactId>dashlayout</artifactId>
-   <version>0.1.5-beta</version>
+   <artifactId>expandingtextarea</artifactId>
+   <version>0.1</version>
 </dependency>
 		
   </dependencies>

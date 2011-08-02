@@ -110,6 +110,10 @@ public class DndNode extends DragAndDropWrapper implements Node {
     wrappedNode.setText(text);
   }
   
+  public String getText() {
+    return wrappedNode.getText();
+  }
+  
   public void setIndex(int index) {
     wrappedNode.setIndex(index);
   }

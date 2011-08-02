@@ -38,6 +38,7 @@ public interface Node extends Component {
   public void setNodeWidth(int width);
   public void setNodeHeight(int height);
   public int getNodeHeight();
+  public String getText();
   public void setText(String text);
   public void setIndex(int index);
   public int getIndex();
