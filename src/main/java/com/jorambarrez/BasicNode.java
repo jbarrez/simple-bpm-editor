@@ -13,6 +13,12 @@
 
 package com.jorambarrez;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
@@ -46,6 +52,10 @@ public class BasicNode extends VerticalLayout implements Node {
   protected int height;
   protected int index;
   
+  protected Map<String, String> properties = new HashMap<String, String>();
+  protected Map<String, String> propertyTypes = new HashMap<String, String>();
+  
+  // Ui
   protected DragAndDropWrapper dragAndDropWrapper;
   protected boolean editable;
   protected Label label;
@@ -58,12 +68,15 @@ public class BasicNode extends VerticalLayout implements Node {
     setNodeHeight(DEFAULT_NODE_HEIGHT);
     
     initLabel(null);
+    addDemoProperties();
   }
   
-  public BasicNode(String text) {
-    setNodeWidth(DEFAULT_NODE_WIDTH);
-    setNodeHeight(DEFAULT_NODE_HEIGHT);
-    initLabel(text);
+  protected void addDemoProperties() {
+    String[] assignees = new String[] {"John Doe", "Kermit The Frog", "Speedy Gonzales"};
+    setProperty("Assignee", assignees[new Random().nextInt(assignees.length)], "text");
+    
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    setProperty("Deadline", dateFormat.format(new Date(new Date().getTime() + new Random().nextLong())), "date");
   }
   
   protected void initLabel(String text) {
@@ -131,22 +144,6 @@ public class BasicNode extends VerticalLayout implements Node {
   }
   
   protected void initTextField(String text) {
-    
-    /* 
-     * Using hack from http://vaadin.com/book/-/page/components.textfield.html :
-     * 
-     * There is no standard way in HTML for setting the width exactly to a number of letters 
-     * (in a monospaced font). You can trick your way around this restriction by putting the
-     *  text field in an undefined-width VerticalLayout together with an undefined-width Label 
-     *  that contains a sample text, and setting the width of the text field as 100%. 
-     *  The layout will get its width from the label, and the text field will use that. 
-     */
-//    setWidth(-1, UNITS_PIXELS); // note there is a min-width in styles.css!
-//    invisibleLabel = new Label(text);
-//    invisibleLabel.setHeight(1, UNITS_PIXELS);
-//    invisibleLabel.addStyleName("invisible-label");
-//    invisibleLabel.setSizeUndefined();
-    
     textField = new TextField();
     if (text != null) {
       textField.setValue(text);
@@ -158,10 +155,6 @@ public class BasicNode extends VerticalLayout implements Node {
     
     addComponent(textField);
     setComponentAlignment(textField, Alignment.MIDDLE_CENTER);
-    
-    // Send a text change event every 0.5 seconds
-    textField.setTextChangeEventMode(TextChangeEventMode.TIMEOUT);
-    textField.setTextChangeTimeout(500);
     
     // Listeners: for enter key (= accept value), escape (= cancel) and auto expanding
     
@@ -178,27 +171,11 @@ public class BasicNode extends VerticalLayout implements Node {
         switchBackToLabel(originalText);
       }
     });
-    
-    textField.addListener(new TextChangeListener() {
-      private static final long serialVersionUID = 1L;
-      public void textChange(TextChangeEvent event) {
-        //invisibleLabel.setValue(event.getText()); // see comments above
-        System.out.println("Text change event");
-//        textField.setColumns((int) (0.6 * event.getText().length())); // colums != # chars
-//        textField.setValue(event.getText()); // apparantly this is needed ... don't know why
-      }
-    });
-    
-    
-    // Add the invisible label at the end (or else the textfield will be pushed down)
-    //addComponent(invisibleLabel);
-    //setComponentAlignment(invisibleLabel, Alignment.MIDDLE_CENTER);
-    
+
   }
   
   protected void switchBackToLabel(String text) {
     removeComponent(textField);
-//    removeComponent(invisibleLabel);
     initLabel(text);
     editable = false;
   }
@@ -240,6 +217,19 @@ public class BasicNode extends VerticalLayout implements Node {
   
   public void setIndex(int index) {
     this.index = index;
+  }
+  
+  public String getProperty(String key) {
+    return properties.get(key);
+  }
+  
+  public String getPropertyType(String key) {
+    return propertyTypes.get(key);
+  }
+  
+  public void setProperty(String key, String value, String type) {
+    properties.put(key, value);
+    propertyTypes.put(key, type);
   }
 
   @Override

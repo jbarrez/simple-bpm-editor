@@ -31,17 +31,21 @@
 
 package com.jorambarrez;
 
+import java.text.SimpleDateFormat;
+
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptAll;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.DateField;
 import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.DragAndDropWrapper.DragStartMode;
 import com.vaadin.ui.DragAndDropWrapper.WrapperTransferable;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 
@@ -57,6 +61,7 @@ public class PropertyPanel extends VerticalLayout {
   
   protected static final String STYLE_PROPERTY_LAYOUT = "property-layout";
   protected static final String STYLE_PROPERTY_PANEL_TITLE = "property-panel-title ";
+  protected static final String STYLE_BOLD = "bold";
   
   protected Label title;
   protected GridLayout propertyLayout;
@@ -64,6 +69,7 @@ public class PropertyPanel extends VerticalLayout {
   
   public PropertyPanel() {
     addStyleName(STYLE_PROPERTY_LAYOUT);
+    setSpacing(true);
     setMargin(true, false, true, true);
   }
   
@@ -86,6 +92,8 @@ public class PropertyPanel extends VerticalLayout {
     propertyLayout = new GridLayout();
     propertyLayout.setColumns(2);
     propertyLayout.setSpacing(true);
+    addComponent(propertyLayout);
+    setExpandRatio(propertyLayout, 1.0f);
   }
   
   protected void initTrashIcon() {
@@ -128,7 +136,26 @@ public class PropertyPanel extends VerticalLayout {
     title.setValue(node.getText());
     title.setContentMode(Label.CONTENT_DEFAULT);
     
+    // Demo
+    propertyLayout.removeAllComponents();
+    Label assigneeLabel = new Label("Assignee");
+    assigneeLabel.addStyleName(STYLE_BOLD);
+    propertyLayout.addComponent(assigneeLabel);
+    TextField assigneeTextField = new TextField();
+    assigneeTextField.setValue(node.getProperty("Assignee"));
+    propertyLayout.addComponent(assigneeTextField);
     
+    Label deadlineLabel = new Label("Deadline");
+    deadlineLabel.addStyleName(STYLE_BOLD);
+    propertyLayout.addComponent(deadlineLabel);
+    DateField deadlineField = new DateField();
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    try {
+      deadlineField.setValue(dateFormat.parseObject(node.getProperty("Deadline")));
+      propertyLayout.addComponent(deadlineField);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
 }

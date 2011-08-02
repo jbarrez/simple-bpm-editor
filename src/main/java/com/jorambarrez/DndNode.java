@@ -122,6 +122,18 @@ public class DndNode extends DragAndDropWrapper implements Node {
     return wrappedNode.getIndex();
   }
   
+  public String getProperty(String key) {
+    return wrappedNode.getProperty(key);
+  }
+  
+  public String getPropertyType(String key) {
+    return wrappedNode.getPropertyType(key);
+  }
+  
+  public void setProperty(String key, String value, String type) {
+    wrappedNode.setProperty(key, value, type);
+  }
+  
   @Override
   public String toString() {
     return wrappedNode.toString();

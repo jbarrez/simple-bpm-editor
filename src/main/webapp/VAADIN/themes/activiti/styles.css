@@ -48,8 +48,11 @@ input.v-textfield.process-step-textfield {
   border-radius: 10px;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 .empty {
-  
 }
 
 .dnd-node {

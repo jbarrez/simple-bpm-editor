@@ -43,4 +43,8 @@ public interface Node extends Component {
   public void setIndex(int index);
   public int getIndex();
   
+  public String getProperty(String key);
+  public String getPropertyType(String key);
+  public void setProperty(String key, String value, String type);
+  
 }

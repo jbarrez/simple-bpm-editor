@@ -39,13 +39,13 @@ public class FlowEditor extends HorizontalLayout {
     modelingPanel = new ModelingPanel();
     modelingPanel.setWidth(100, UNITS_PERCENTAGE);
     addComponent(modelingPanel);
-    setExpandRatio(modelingPanel, 0.8f);
+    setExpandRatio(modelingPanel, 0.75f);
     
     propertyPanel = new PropertyPanel();
     propertyPanel.setWidth(100, UNITS_PERCENTAGE);
     propertyPanel.setHeight(100, UNITS_PERCENTAGE);
     addComponent(propertyPanel);
-    setExpandRatio(propertyPanel, 0.2f);
+    setExpandRatio(propertyPanel, 0.25f);
   }
   
   public void replaceEmptyNode(Node emptyNode, Node newNode) {

@@ -85,6 +85,12 @@ public class ModelingPanel extends VerticalLayout {
     setComponentAlignment(c, Alignment.MIDDLE_CENTER);
   }
   
+  @Override
+  public void addComponent(Component c, int index) {
+    super.addComponent(c, index);
+    setComponentAlignment(c, Alignment.MIDDLE_CENTER);
+  }
+  
   public Node getNode(int row) {
     if (row >= getComponentCount()) {
       return null;
@@ -107,6 +113,7 @@ public class ModelingPanel extends VerticalLayout {
       throw new RuntimeException("Only possible to replace empty nodes");
     }
     replaceComponent(emptyNode, newNode); // and place it where the empty node was
+    setComponentAlignment(newNode, Alignment.MIDDLE_CENTER);
     notifyNodesChanged();
   }
   
