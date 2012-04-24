@@ -1,1 +1,5 @@
 protoype for a simple webbased BPMN modeler
+
+Just run 'start-server.sh' on the commandline. 
+
+This will start the webapp on http://localhost:8080/simple-modeler/
